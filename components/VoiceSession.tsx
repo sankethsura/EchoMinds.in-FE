@@ -10,7 +10,6 @@ import {
 } from "@livekit/components-react";
 import { TranscriptView } from "./TranscriptView";
 import { ConnectionBadge } from "./ConnectionBadge";
-import { DebugPanel } from "./DebugPanel";
 import type { AgentState } from "@livekit/components-react";
 
 interface VoiceSessionProps {
@@ -147,7 +146,6 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
         </button>
       </footer>
 
-      <DebugPanel />
     </div>
   );
 }

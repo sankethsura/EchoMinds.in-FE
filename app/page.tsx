@@ -3,9 +3,12 @@
 import { useState, useCallback, useRef } from "react";
 import { LiveKitRoom } from "@livekit/components-react";
 import { VoiceSession } from "@/components/VoiceSession";
+import { PhoneCallTab } from "@/components/PhoneCallTab";
+import { InboundCallTab } from "@/components/InboundCallTab";
+import { TabSwitcher, type Tab } from "@/components/TabSwitcher";
 import { fetchToken, type TokenResponse } from "@/lib/api";
 
-type AppState =
+type VoiceState =
   | { status: "idle" }
   | { status: "connecting" }
   | { status: "connected"; session: TokenResponse }
@@ -26,7 +29,6 @@ function TalkButton({ onClick, disabled }: { onClick: () => void; disabled: bool
         color: "#fff",
       }}
     >
-      {/* Animated ring */}
       <span
         className="absolute inset-0 rounded-full pointer-events-none"
         style={{
@@ -39,8 +41,8 @@ function TalkButton({ onClick, disabled }: { onClick: () => void; disabled: bool
   );
 }
 
-export default function Home() {
-  const [state, setState] = useState<AppState>({ status: "idle" });
+function VoiceChatTab() {
+  const [state, setState] = useState<VoiceState>({ status: "idle" });
   const abortRef = useRef<AbortController | null>(null);
 
   const startSession = useCallback(async () => {
@@ -51,15 +53,10 @@ export default function Home() {
     setState({ status: "connecting" });
     try {
       const session = await fetchToken(controller.signal);
-      if (!controller.signal.aborted) {
-        setState({ status: "connected", session });
-      }
+      if (!controller.signal.aborted) setState({ status: "connected", session });
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") return;
-      setState({
-        status: "error",
-        message: err instanceof Error ? err.message : "Failed to connect",
-      });
+      setState({ status: "error", message: err instanceof Error ? err.message : "Failed to connect" });
     }
   }, []);
 
@@ -78,9 +75,7 @@ export default function Home() {
           audio={true}
           video={false}
           onDisconnected={endSession}
-          onError={(err) => {
-            setState({ status: "error", message: err.message });
-          }}
+          onError={(err) => setState({ status: "error", message: err.message })}
           style={{ height: "100%", display: "flex", flexDirection: "column" }}
         >
           <VoiceSession onEnd={endSession} />
@@ -91,26 +86,20 @@ export default function Home() {
 
   return (
     <div
-      className="h-full flex flex-col items-center justify-center gap-12 px-6 relative"
+      className="flex flex-col items-center justify-center gap-12 h-full px-6 relative"
       style={{ background: "var(--bg)" }}
     >
-      {/* Wordmark */}
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="text-4xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
-          EchoMinds
-        </h1>
+      <div className="flex flex-col items-center gap-2 text-center">
+        <h2 className="text-3xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+          Voice Chat
+        </h2>
         <p className="text-base" style={{ color: "var(--text-secondary)" }}>
-          Your AI voice assistant, always listening.
+          Talk directly with Aria in your browser.
         </p>
       </div>
 
-      {/* Central talk button */}
-      <TalkButton
-        onClick={startSession}
-        disabled={state.status === "connecting"}
-      />
+      <TalkButton onClick={startSession} disabled={state.status === "connecting"} />
 
-      {/* Status under button */}
       <div className="h-8 flex items-center">
         {state.status === "connecting" && (
           <p className="text-sm animate-pulse" style={{ color: "var(--text-secondary)" }}>
@@ -131,10 +120,41 @@ export default function Home() {
         )}
       </div>
 
-      {/* Footer hint */}
       <p className="text-xs absolute bottom-8" style={{ color: "var(--text-secondary)" }}>
         Click Talk and allow microphone access to begin
       </p>
+    </div>
+  );
+}
+
+export default function Home() {
+  const [activeTab, setActiveTab] = useState<Tab>("voice");
+
+  return (
+    <div className="h-full flex flex-col" style={{ background: "var(--bg)" }}>
+      {/* Top bar */}
+      <header
+        className="flex flex-col items-center gap-4 pt-8 pb-4 px-6 shrink-0"
+        style={{ borderBottom: "1px solid var(--border)" }}
+      >
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+          EchoMinds
+        </h1>
+        <TabSwitcher active={activeTab} onChange={setActiveTab} />
+      </header>
+
+      {/* Tab content */}
+      <div className="flex-1 min-h-0 relative">
+        <div className={activeTab === "voice" ? "h-full" : "hidden h-full"}>
+          <VoiceChatTab />
+        </div>
+        <div className={activeTab === "phone" ? "h-full" : "hidden h-full"}>
+          <PhoneCallTab />
+        </div>
+        <div className={activeTab === "inbound" ? "h-full" : "hidden h-full"}>
+          <InboundCallTab />
+        </div>
+      </div>
     </div>
   );
 }

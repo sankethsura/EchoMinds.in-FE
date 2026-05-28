@@ -63,6 +63,30 @@ export async function fetchSipStatus(): Promise<SipStatus> {
   return request<SipStatus>("/sip-status");
 }
 
+export async function createOutboundTrunk(
+  address: string,
+  username: string,
+  password: string,
+): Promise<{ trunk_id: string }> {
+  return request<{ trunk_id: string }>("/create-outbound-trunk", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ address, username, password }),
+  });
+}
+
+export async function createTwilioTrunk(
+  accountSid: string,
+  authToken: string,
+  twilioNumber: string,
+): Promise<{ trunk_id: string; twilio_trunk_sid: string; sip_domain: string }> {
+  return request("/create-twilio-trunk", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ account_sid: accountSid, auth_token: authToken, twilio_number: twilioNumber }),
+  });
+}
+
 export async function fetchInboundStatus(): Promise<InboundStatus> {
   return request<InboundStatus>("/inbound-status");
 }

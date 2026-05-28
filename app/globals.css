@@ -1,20 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #06060d;
-  --surface: rgba(255, 255, 255, 0.04);
-  --surface-2: rgba(255, 255, 255, 0.07);
-  --border: rgba(255, 255, 255, 0.08);
-  --text-primary: #f0eeff;
-  --text-secondary: rgba(240, 238, 255, 0.42);
-  --accent: #7c5af6;
-  --accent-light: #a78bfa;
-  --accent-glow: rgba(124, 90, 246, 0.32);
-  --agent-color: #7c5af6;
-  --user-color: #34d399;
-  --red: #f87171;
-  --yellow: #fbbf24;
-  --green: #34d399;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f0f1f6;
+  --border: rgba(30, 32, 51, 0.1);
+  --border-card: rgba(220, 220, 230, 0.7);
+  --text-primary: #1e2033;
+  --text-secondary: #6b6c7e;
+  --text-tertiary: #9b9caf;
+  --accent: #1e2033;
+  --accent-mid: #3a3f5c;
+  --accent-glow: rgba(30, 32, 51, 0.14);
+  --agent-color: #3a3f5c;
+  --user-color: #059669;
+  --btn-dark-from: #3a3f5c;
+  --btn-dark-to: #1e2033;
+  --red: #dc2626;
+  --yellow: #d97706;
+  --green: #059669;
 }
 
 @theme inline {
@@ -42,50 +46,17 @@ html, body {
   overscroll-behavior: none;
 }
 
-/* Subtle dot grid texture */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 28px 28px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Top radial glow */
-body::after {
-  content: "";
-  position: fixed;
-  top: -120px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 900px;
-  height: 500px;
-  background: radial-gradient(ellipse, rgba(124, 90, 246, 0.12) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Ensure content sits above texture layers */
-#__next,
-[data-nextjs-scroll-focus-boundary],
-.h-full {
-  position: relative;
-  z-index: 1;
-}
-
 /* Orb idle breathing */
 @keyframes orb-breathe {
-  0%, 100% { transform: scale(1); opacity: 0.75; }
-  50% { transform: scale(1.06); opacity: 1; }
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
 }
 
 /* Orb speaking pulse */
 @keyframes orb-pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 40px 10px var(--accent-glow); }
-  25% { transform: scale(1.08); box-shadow: 0 0 70px 22px var(--accent-glow); }
-  75% { transform: scale(1.04); box-shadow: 0 0 55px 16px var(--accent-glow); }
+  0%, 100% { transform: scale(1); box-shadow: 0 0 30px 8px var(--accent-glow); }
+  25% { transform: scale(1.07); box-shadow: 0 0 60px 18px var(--accent-glow); }
+  75% { transform: scale(1.03); box-shadow: 0 0 45px 12px var(--accent-glow); }
 }
 
 /* Ring orbit */
@@ -93,12 +64,10 @@ body::after {
   from { transform: rotateX(75deg) rotateZ(0deg); }
   to   { transform: rotateX(75deg) rotateZ(360deg); }
 }
-
 @keyframes orbit-2 {
   from { transform: rotateX(75deg) rotateZ(120deg); }
   to   { transform: rotateX(75deg) rotateZ(480deg); }
 }
-
 @keyframes orbit-3 {
   from { transform: rotateX(75deg) rotateZ(240deg); }
   to   { transform: rotateX(75deg) rotateZ(600deg); }
@@ -109,40 +78,17 @@ body::after {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes shimmer {
-  from { background-position: -200% center; }
-  to   { background-position: 200% center; }
-}
-
-.orb-idle {
-  animation: orb-breathe 3s ease-in-out infinite;
-}
-
-.orb-speaking {
-  animation: orb-pulse 0.8s ease-in-out infinite;
-}
-
-.orb-listening {
-  animation: orb-breathe 2s ease-in-out infinite;
-}
+.orb-idle     { animation: orb-breathe 3s ease-in-out infinite; }
+.orb-speaking { animation: orb-pulse 0.8s ease-in-out infinite; }
+.orb-listening{ animation: orb-breathe 2s ease-in-out infinite; }
 
 .ring-1 { animation: orbit-1 4s linear infinite; }
 .ring-2 { animation: orbit-2 6s linear infinite; }
 .ring-3 { animation: orbit-3 8s linear infinite; }
 
-.transcript-entry {
-  animation: fade-in-up 0.25s ease-out;
-}
+.transcript-entry { animation: fade-in-up 0.25s ease-out; }
 
-/* Glassmorphic card base */
-.glass {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-/* BarVisualizer CSS override */
+/* BarVisualizer */
 [data-lk-bar-visualizer] {
   display: flex;
   align-items: center;
@@ -151,9 +97,8 @@ body::after {
   width: 100%;
   height: 100%;
 }
-
 [data-lk-bar-visualizer] > [data-lk-bar] {
-  background: var(--accent);
+  background: rgba(255,255,255,0.7);
   border-radius: 9999px;
   width: 4px;
   min-height: 4px;

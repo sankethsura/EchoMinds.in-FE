@@ -24,8 +24,8 @@ function TalkButton({ onClick, disabled }: { onClick: () => void; disabled: bool
       style={{
         width: 160,
         height: 160,
-        background: "radial-gradient(circle at 38% 36%, #9d80f8, #5b3dc4 60%, #3b1fa8)",
-        boxShadow: "0 0 60px 18px rgba(124,90,246,0.3), 0 8px 40px rgba(0,0,0,0.6)",
+        background: "radial-gradient(circle at 38% 36%, #4a5593, #2a3060 60%, #1e2033)",
+        boxShadow: "0 0 60px 18px rgba(30,32,51,0.18), 0 8px 40px rgba(30,32,51,0.15)",
         color: "#fff",
         letterSpacing: "0.04em",
       }}
@@ -33,7 +33,7 @@ function TalkButton({ onClick, disabled }: { onClick: () => void; disabled: bool
       <span
         className="absolute inset-0 rounded-full pointer-events-none"
         style={{
-          border: "1.5px solid rgba(167,139,250,0.4)",
+          border: "1.5px solid rgba(30,32,51,0.25)",
           animation: "orb-breathe 2.5s ease-in-out infinite",
         }}
       />
@@ -41,7 +41,7 @@ function TalkButton({ onClick, disabled }: { onClick: () => void; disabled: bool
         className="absolute rounded-full pointer-events-none"
         style={{
           inset: -12,
-          border: "1px solid rgba(124,90,246,0.15)",
+          border: "1px solid rgba(30,32,51,0.1)",
           animation: "orb-breathe 3s ease-in-out infinite 0.4s",
         }}
       />
@@ -149,12 +149,7 @@ export default function Home() {
         <div className="flex flex-col items-center gap-1">
           <h1
             className="text-2xl font-bold tracking-tight"
-            style={{
-              background: "linear-gradient(135deg, #c084fc 0%, #818cf8 55%, #60a5fa 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
+            style={{ color: "var(--text-primary)" }}
           >
             EchoMinds
           </h1>

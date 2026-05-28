@@ -32,10 +32,8 @@ function PhoneInput({ value, onChange, disabled }: PhoneInputProps) {
     <div
       className="flex items-center gap-3 rounded-2xl px-5 py-4 w-full max-w-sm transition-all duration-200"
       style={{
-        background: "rgba(255,255,255,0.04)",
-        border: "1px solid rgba(255,255,255,0.09)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
+        background: "var(--surface)",
+        border: "1px solid var(--border-card)",
       }}
     >
       <span className="text-xl select-none opacity-60">{isSip ? "🔗" : "📞"}</span>
@@ -132,9 +130,9 @@ function OutboundCallTracker({
             onClick={onEnableAudio}
             className="w-full py-3 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
             style={{
-              background: "rgba(124,90,246,0.12)",
-              border: "1px solid rgba(124,90,246,0.3)",
-              color: "var(--accent-light)",
+              background: "var(--surface-2)",
+              border: "1px solid var(--border-card)",
+              color: "var(--text-primary)",
             }}
           >
             Listen In
@@ -145,9 +143,9 @@ function OutboundCallTracker({
             onClick={onEnd}
             className="w-full py-3 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95"
             style={{
-              background: "linear-gradient(135deg, rgba(124,90,246,0.9), rgba(91,61,196,0.9))",
+              background: "linear-gradient(to bottom, #3a3f5c 0%, #1e2033 100%)",
               color: "#fff",
-              boxShadow: "0 2px 16px rgba(124,90,246,0.3)",
+              boxShadow: "0 2px 12px rgba(30,32,51,0.2)",
             }}
           >
             Done
@@ -299,10 +297,8 @@ export function PhoneCallTab() {
         <div
           className="flex flex-col gap-4 w-full max-w-sm px-5 py-5 rounded-2xl"
           style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
+            background: "var(--surface)",
+            border: "1px solid var(--border-card)",
           }}
         >
           <div className="flex flex-col gap-1">
@@ -318,8 +314,8 @@ export function PhoneCallTab() {
           <div
             className="flex rounded-full p-1 gap-0.5"
             style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.07)",
+              background: "var(--surface-2)",
+              border: "1px solid var(--border-card)",
             }}
           >
             {([
@@ -334,7 +330,7 @@ export function PhoneCallTab() {
                 className="flex-1 py-1.5 rounded-full text-xs font-medium transition-all duration-200"
                 style={{
                   background: provider === id
-                    ? "linear-gradient(135deg, rgba(124,90,246,0.9), rgba(91,61,196,0.9))"
+                    ? "linear-gradient(to bottom, #3a3f5c 0%, #1e2033 100%)"
                     : "transparent",
                   color: provider === id ? "#fff" : "var(--text-secondary)",
                 }}
@@ -351,8 +347,8 @@ export function PhoneCallTab() {
                   <div
                     className="px-3 py-2.5 rounded-xl text-xs leading-relaxed"
                     style={{
-                      background: "rgba(124,90,246,0.07)",
-                      border: "1px solid rgba(124,90,246,0.18)",
+                      background: "var(--surface-2)",
+                      border: "1px solid var(--border-card)",
                       color: "var(--text-secondary)",
                     }}
                   >
@@ -471,9 +467,9 @@ export function PhoneCallTab() {
                 }
                 className="w-full py-2.5 rounded-full text-sm font-medium transition-all duration-200 hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
-                  background: "linear-gradient(135deg, rgba(124,90,246,0.9), rgba(91,61,196,0.9))",
+                  background: "linear-gradient(to bottom, #3a3f5c 0%, #1e2033 100%)",
                   color: "#fff",
-                  boxShadow: "0 2px 16px rgba(124,90,246,0.25)",
+                  boxShadow: "0 2px 12px rgba(30,32,51,0.2)",
                 }}
               >
                 {setupState.status === "creating" ? "Setting up…" : "Create Outbound Trunk"}

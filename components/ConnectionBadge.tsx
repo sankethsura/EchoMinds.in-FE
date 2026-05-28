@@ -24,8 +24,8 @@ const CONFIG: Record<ConnectionState, { label: string; color: string; dot: strin
   },
   [ConnectionState.Disconnected]: {
     label: "Disconnected",
-    color: "rgba(255,255,255,0.06)",
-    dot: "rgba(240,238,255,0.3)",
+    color: "rgba(30,32,51,0.06)",
+    dot: "rgba(30,32,51,0.25)",
   },
   [ConnectionState.SignalReconnecting]: {
     label: "Reconnecting",

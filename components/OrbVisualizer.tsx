@@ -39,15 +39,15 @@ export function OrbVisualizer({ agentState, agentTrack, isUserSpeaking }: OrbVis
         {/* Orbiting rings */}
         <div
           className="ring-1 absolute inset-0 rounded-full border"
-          style={{ borderColor: "rgba(124,90,246,0.25)", transformStyle: "preserve-3d" }}
+          style={{ borderColor: "rgba(30,32,51,0.18)", transformStyle: "preserve-3d" }}
         />
         <div
           className="ring-2 absolute inset-4 rounded-full border"
-          style={{ borderColor: "rgba(124,90,246,0.15)", transformStyle: "preserve-3d" }}
+          style={{ borderColor: "rgba(30,32,51,0.1)", transformStyle: "preserve-3d" }}
         />
         <div
           className="ring-3 absolute inset-8 rounded-full border"
-          style={{ borderColor: "rgba(167,139,250,0.1)", transformStyle: "preserve-3d" }}
+          style={{ borderColor: "rgba(30,32,51,0.06)", transformStyle: "preserve-3d" }}
         />
 
         {/* Core orb */}
@@ -55,11 +55,11 @@ export function OrbVisualizer({ agentState, agentTrack, isUserSpeaking }: OrbVis
           className={`absolute inset-10 rounded-full ${orbClass(agentState)}`}
           style={{
             background: isSpeaking
-              ? "radial-gradient(circle at 38% 36%, #b09afe, #7c5af6 55%, #4a2fa8)"
-              : "radial-gradient(circle at 38% 36%, #8b6cf4, #5b3dc4 60%, #2e1a80)",
+              ? "radial-gradient(circle at 38% 36%, #5a6490, #2e3454 55%, #1e2033)"
+              : "radial-gradient(circle at 38% 36%, #4a5593, #2a3060 60%, #1e2033)",
             boxShadow: isSpeaking
-              ? "0 0 60px 22px rgba(124,90,246,0.45)"
-              : "0 0 30px 8px rgba(124,90,246,0.18)",
+              ? "0 0 60px 22px rgba(30,32,51,0.25)"
+              : "0 0 30px 8px rgba(30,32,51,0.12)",
           }}
         >
           {agentTrack && isSpeaking && (

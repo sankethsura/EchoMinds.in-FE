@@ -54,12 +54,7 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
         <div className="flex items-center gap-2.5">
           <span
             className="text-base font-semibold"
-            style={{
-              background: "linear-gradient(135deg, #c084fc, #818cf8)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
+            style={{ color: "var(--text-primary)" }}
           >
             EchoMinds
           </span>
@@ -114,10 +109,8 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
       <section
         className="mx-6 mb-4 rounded-2xl overflow-hidden flex flex-col"
         style={{
-          background: "rgba(255,255,255,0.03)",
-          border: "1px solid var(--border)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
+          background: "var(--surface)",
+          border: "1px solid var(--border-card)",
           height: 200,
           maxHeight: "30vh",
         }}

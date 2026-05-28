@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EchoMinds — Frontend
 
-## Getting Started
+Next.js voice UI that connects to the backend and renders a real-time voice conversation with Aria.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 20+
+- The backend running on port 8000
+
+## Setup
+
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local
+# Edit .env.local if your backend runs on a different port/host
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `NEXT_PUBLIC_BACKEND_URL` | URL of the FastAPI backend | `http://localhost:8000` |
+
+## Running
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Click the **Talk** button
+2. Allow microphone access when prompted
+3. The agent (Aria) will greet you and begin listening
+4. Speak naturally — Aria responds with voice
+5. A live transcript scrolls at the bottom
+6. Click **End Call** to disconnect
 
-## Learn More
+## How it works
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Clicking Talk fetches a short-lived LiveKit JWT from the backend `/token` endpoint
+- The frontend joins the LiveKit room using that token
+- LiveKit dispatches a job to the agent worker, which joins the same room
+- The agent handles STT → LLM → TTS in a streaming pipeline
+- `@livekit/components-react` hooks handle audio rendering and state
+# EchoMinds.in-FE

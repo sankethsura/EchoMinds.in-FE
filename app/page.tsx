@@ -140,7 +140,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("voice");
 
   return (
-    <div className="h-full flex flex-col" style={{ background: "var(--bg)" }}>
+    <div className="h-full flex flex-col" style={{ background: "transparent" }}>
       <header
         className="flex flex-col items-center gap-5 pt-8 pb-5 px-6 shrink-0"
         style={{ borderBottom: "1px solid var(--border)" }}

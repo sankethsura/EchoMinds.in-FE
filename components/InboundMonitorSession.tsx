@@ -29,7 +29,7 @@ export function InboundMonitorSession({ roomName, onStop }: InboundMonitorSessio
       : null;
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "var(--bg)" }}>
+    <div className="flex flex-col h-full" style={{ background: "transparent" }}>
       <RoomAudioRenderer volume={1.0} />
 
       {/* Header */}

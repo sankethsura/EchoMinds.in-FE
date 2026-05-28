@@ -44,7 +44,7 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
   const isUserSpeaking = isMicrophoneEnabled && localParticipant?.isSpeaking;
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "var(--bg)" }}>
+    <div className="flex flex-col h-full" style={{ background: "transparent" }}>
       <RoomAudioRenderer volume={1.0} />
 
       <header

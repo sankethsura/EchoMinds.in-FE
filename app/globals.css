@@ -39,7 +39,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  background: linear-gradient(145deg, #ffffff 0%, #f0f1f8 55%, #e8eaf4 100%);
   color: var(--text-primary);
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;

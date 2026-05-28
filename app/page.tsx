@@ -20,20 +20,29 @@ function TalkButton({ onClick, disabled }: { onClick: () => void; disabled: bool
       onClick={onClick}
       disabled={disabled}
       aria-label="Start voice session"
-      className="relative flex items-center justify-center rounded-full font-bold text-lg tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+      className="relative flex items-center justify-center rounded-full font-semibold text-lg tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       style={{
         width: 160,
         height: 160,
-        background: "radial-gradient(circle at 35% 35%, #5f8cff, #2a50cc)",
-        boxShadow: "0 0 50px 15px rgba(79,124,255,0.35), 0 8px 32px rgba(0,0,0,0.5)",
+        background: "radial-gradient(circle at 38% 36%, #9d80f8, #5b3dc4 60%, #3b1fa8)",
+        boxShadow: "0 0 60px 18px rgba(124,90,246,0.3), 0 8px 40px rgba(0,0,0,0.6)",
         color: "#fff",
+        letterSpacing: "0.04em",
       }}
     >
       <span
         className="absolute inset-0 rounded-full pointer-events-none"
         style={{
-          border: "2px solid rgba(79,124,255,0.5)",
+          border: "1.5px solid rgba(167,139,250,0.4)",
           animation: "orb-breathe 2.5s ease-in-out infinite",
+        }}
+      />
+      <span
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          inset: -12,
+          border: "1px solid rgba(124,90,246,0.15)",
+          animation: "orb-breathe 3s ease-in-out infinite 0.4s",
         }}
       />
       Talk
@@ -85,16 +94,16 @@ function VoiceChatTab() {
   }
 
   return (
-    <div
-      className="flex flex-col items-center justify-center gap-12 h-full px-6 relative"
-      style={{ background: "var(--bg)" }}
-    >
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h2 className="text-3xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+    <div className="flex flex-col items-center justify-center gap-12 h-full px-6 relative">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <h2
+          className="text-3xl font-bold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
           Voice Chat
         </h2>
-        <p className="text-base" style={{ color: "var(--text-secondary)" }}>
-          Talk directly with Aria in your browser.
+        <p className="text-sm max-w-xs" style={{ color: "var(--text-secondary)" }}>
+          Speak with Aria, your AI voice assistant, live in your browser.
         </p>
       </div>
 
@@ -102,16 +111,16 @@ function VoiceChatTab() {
 
       <div className="h-8 flex items-center">
         {state.status === "connecting" && (
-          <p className="text-sm animate-pulse" style={{ color: "var(--text-secondary)" }}>
-            Connecting…
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            <span className="animate-pulse">Connecting…</span>
           </p>
         )}
         {state.status === "error" && (
           <div className="flex flex-col items-center gap-2">
-            <p className="text-sm text-red-400">{state.message}</p>
+            <p className="text-sm" style={{ color: "var(--red)" }}>{state.message}</p>
             <button
               onClick={() => setState({ status: "idle" })}
-              className="text-xs underline"
+              className="text-xs underline underline-offset-2"
               style={{ color: "var(--text-secondary)" }}
             >
               Dismiss
@@ -132,18 +141,31 @@ export default function Home() {
 
   return (
     <div className="h-full flex flex-col" style={{ background: "var(--bg)" }}>
-      {/* Top bar */}
       <header
-        className="flex flex-col items-center gap-4 pt-8 pb-4 px-6 shrink-0"
+        className="flex flex-col items-center gap-5 pt-8 pb-5 px-6 shrink-0"
         style={{ borderBottom: "1px solid var(--border)" }}
       >
-        <h1 className="text-2xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
-          EchoMinds
-        </h1>
+        {/* Brand */}
+        <div className="flex flex-col items-center gap-1">
+          <h1
+            className="text-2xl font-bold tracking-tight"
+            style={{
+              background: "linear-gradient(135deg, #c084fc 0%, #818cf8 55%, #60a5fa 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            EchoMinds
+          </h1>
+          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+            Powered by Aria · Voice AI
+          </p>
+        </div>
+
         <TabSwitcher active={activeTab} onChange={setActiveTab} />
       </header>
 
-      {/* Tab content */}
       <div className="flex-1 min-h-0 relative">
         <div className={activeTab === "voice" ? "h-full" : "hidden h-full"}>
           <VoiceChatTab />

@@ -35,17 +35,18 @@ export function TranscriptView({ segments, localIdentity }: TranscriptViewProps)
             className={`transcript-entry flex flex-col gap-0.5 ${isUser ? "items-end" : "items-start"}`}
           >
             <span
-              className="text-xs font-medium uppercase tracking-wide"
-              style={{ color: isUser ? "var(--user-color)" : "var(--accent)" }}
+              className="text-xs font-medium uppercase tracking-widest"
+              style={{ color: isUser ? "var(--user-color)" : "var(--accent-light)", letterSpacing: "0.12em" }}
             >
               {isUser ? "You" : "Aria"}
             </span>
             <p
-              className="text-sm leading-relaxed rounded-2xl px-4 py-2 max-w-xs"
+              className="text-sm leading-relaxed px-4 py-2 max-w-xs"
               style={{
-                background: isUser ? "rgba(52,211,153,0.1)" : "rgba(79,124,255,0.1)",
+                background: isUser ? "rgba(52,211,153,0.08)" : "rgba(124,90,246,0.1)",
                 color: "var(--text-primary)",
-                borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+                borderRadius: isUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                border: isUser ? "1px solid rgba(52,211,153,0.12)" : "1px solid rgba(124,90,246,0.15)",
               }}
             >
               {seg.text}

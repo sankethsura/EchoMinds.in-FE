@@ -17,14 +17,14 @@ function orbClass(state: AgentState): string {
 }
 
 function statusLabel(state: AgentState, isUserSpeaking: boolean): string {
-  if (isUserSpeaking) return "Listening…";
+  if (isUserSpeaking) return "Listening";
   switch (state) {
     case "speaking": return "Speaking";
-    case "thinking": return "Thinking…";
+    case "thinking": return "Thinking";
     case "listening": return "Ready";
     case "connecting":
     case "pre-connect-buffering":
-    case "initializing": return "Connecting…";
+    case "initializing": return "Connecting";
     case "failed": return "Failed";
     default: return "Idle";
   }
@@ -35,29 +35,19 @@ export function OrbVisualizer({ agentState, agentTrack, isUserSpeaking }: OrbVis
 
   return (
     <div className="flex flex-col items-center gap-8 select-none">
-      {/* Orb container */}
       <div className="relative" style={{ width: 200, height: 200 }}>
         {/* Orbiting rings */}
         <div
           className="ring-1 absolute inset-0 rounded-full border"
-          style={{
-            borderColor: "rgba(79,124,255,0.3)",
-            transformStyle: "preserve-3d",
-          }}
+          style={{ borderColor: "rgba(124,90,246,0.25)", transformStyle: "preserve-3d" }}
         />
         <div
           className="ring-2 absolute inset-4 rounded-full border"
-          style={{
-            borderColor: "rgba(79,124,255,0.2)",
-            transformStyle: "preserve-3d",
-          }}
+          style={{ borderColor: "rgba(124,90,246,0.15)", transformStyle: "preserve-3d" }}
         />
         <div
           className="ring-3 absolute inset-8 rounded-full border"
-          style={{
-            borderColor: "rgba(79,124,255,0.15)",
-            transformStyle: "preserve-3d",
-          }}
+          style={{ borderColor: "rgba(167,139,250,0.1)", transformStyle: "preserve-3d" }}
         />
 
         {/* Core orb */}
@@ -65,14 +55,13 @@ export function OrbVisualizer({ agentState, agentTrack, isUserSpeaking }: OrbVis
           className={`absolute inset-10 rounded-full ${orbClass(agentState)}`}
           style={{
             background: isSpeaking
-              ? "radial-gradient(circle at 35% 35%, #7aa5ff, #2a50cc)"
-              : "radial-gradient(circle at 35% 35%, #4a6fd4, #1a2f80)",
+              ? "radial-gradient(circle at 38% 36%, #b09afe, #7c5af6 55%, #4a2fa8)"
+              : "radial-gradient(circle at 38% 36%, #8b6cf4, #5b3dc4 60%, #2e1a80)",
             boxShadow: isSpeaking
-              ? "0 0 60px 20px rgba(79,124,255,0.45)"
-              : "0 0 30px 8px rgba(79,124,255,0.2)",
+              ? "0 0 60px 22px rgba(124,90,246,0.45)"
+              : "0 0 30px 8px rgba(124,90,246,0.18)",
           }}
         >
-          {/* BarVisualizer inside the orb when speaking */}
           {agentTrack && isSpeaking && (
             <BarVisualizer
               track={agentTrack}
@@ -84,10 +73,9 @@ export function OrbVisualizer({ agentState, agentTrack, isUserSpeaking }: OrbVis
         </div>
       </div>
 
-      {/* Status label */}
       <p
-        className="text-sm font-medium tracking-widest uppercase"
-        style={{ color: "var(--text-secondary)", letterSpacing: "0.15em" }}
+        className="text-xs font-medium uppercase tracking-widest"
+        style={{ color: "var(--text-secondary)", letterSpacing: "0.18em" }}
       >
         {statusLabel(agentState, isUserSpeaking)}
       </p>

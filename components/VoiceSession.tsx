@@ -8,7 +8,6 @@ import {
   useTranscriptions,
   useVoiceAssistant,
 } from "@livekit/components-react";
-import { Track } from "livekit-client";
 import { OrbVisualizer } from "./OrbVisualizer";
 import { TranscriptView } from "./TranscriptView";
 import { ConnectionBadge } from "./ConnectionBadge";
@@ -25,83 +24,64 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
   const transcriptions = useTranscriptions();
   const [micError, setMicError] = useState<string | null>(null);
 
-  // Explicitly enable the microphone and log any errors
   useEffect(() => {
     if (!localParticipant) return;
-
-    localParticipant
-      .setMicrophoneEnabled(true)
-      .then(() => {
-        console.log("[EchoMinds] Microphone enabled successfully");
-      })
-      .catch((err: Error) => {
-        console.error("[EchoMinds] Failed to enable microphone:", err);
-        setMicError(err.message);
-      });
+    localParticipant.setMicrophoneEnabled(true).catch((err: Error) => {
+      console.error("[EchoMinds] Failed to enable microphone:", err);
+      setMicError(err.message);
+    });
   }, [localParticipant]);
 
-  // Log track state changes
   useEffect(() => {
-    if (!microphoneTrack) {
-      console.warn("[EchoMinds] No microphone track published yet");
-      return;
-    }
-    console.log(
-      "[EchoMinds] Mic track state — sid:", microphoneTrack.trackSid,
-      "| muted:", microphoneTrack.isMuted,
-      "| kind:", microphoneTrack.kind,
-    );
+    if (!microphoneTrack) return;
+    console.log("[EchoMinds] Mic track —", microphoneTrack.trackSid);
   }, [microphoneTrack]);
 
-  // Log agent state changes
   useEffect(() => {
-    console.log("[EchoMinds] Agent state changed →", agentState);
+    console.log("[EchoMinds] Agent state →", agentState);
   }, [agentState]);
-
-  // Log agent audio track
-  useEffect(() => {
-    if (audioTrack) {
-      console.log("[EchoMinds] Agent audio track present:", audioTrack);
-    } else {
-      console.warn("[EchoMinds] No agent audio track yet");
-    }
-  }, [audioTrack]);
 
   const isUserSpeaking = isMicrophoneEnabled && localParticipant?.isSpeaking;
 
   return (
     <div className="flex flex-col h-full" style={{ background: "var(--bg)" }}>
-      {/* Renders all remote audio tracks — must stay mounted */}
       <RoomAudioRenderer volume={1.0} />
 
-      {/* Header */}
       <header
-        className="flex items-center justify-between px-6 py-4"
+        className="flex items-center justify-between px-6 py-4 shrink-0"
         style={{ borderBottom: "1px solid var(--border)" }}
       >
-        <div className="flex items-center gap-3">
-          <span className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>
+        <div className="flex items-center gap-2.5">
+          <span
+            className="text-base font-semibold"
+            style={{
+              background: "linear-gradient(135deg, #c084fc, #818cf8)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
             EchoMinds
           </span>
-          <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
-            with Aria
-          </span>
+          <span className="text-xs" style={{ color: "var(--text-secondary)" }}>· Aria</span>
         </div>
         <ConnectionBadge state={connectionState} />
       </header>
 
-      {/* Mic permission error banner */}
       {micError && (
         <div
           className="mx-6 mt-4 px-4 py-3 rounded-xl text-sm"
-          style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.4)", color: "#f87171" }}
+          style={{
+            background: "rgba(248,113,113,0.1)",
+            border: "1px solid rgba(248,113,113,0.25)",
+            color: "var(--red)",
+          }}
         >
-          Microphone error: {micError}. Please allow mic access and reload.
+          Microphone error: {micError}. Allow mic access and reload.
         </div>
       )}
 
-      {/* Main content */}
-      <main className="flex flex-col flex-1 items-center justify-center gap-10 px-6 overflow-hidden">
+      <main className="flex flex-col flex-1 items-center justify-center gap-8 px-6 overflow-hidden">
         <OrbVisualizer
           agentState={agentState}
           agentTrack={audioTrack}
@@ -110,21 +90,21 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
 
         {isUserSpeaking && (
           <div className="flex items-center gap-2">
-            <div className="flex gap-1 items-end h-5">
+            <div className="flex gap-1 items-end h-4">
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}
                   className="w-1 rounded-full"
                   style={{
                     background: "var(--user-color)",
-                    height: `${60 + i * 20}%`,
+                    height: `${55 + i * 20}%`,
                     animation: `orb-breathe ${0.5 + i * 0.15}s ease-in-out infinite`,
                   }}
                 />
               ))}
             </div>
             <span className="text-xs" style={{ color: "var(--user-color)" }}>
-              You&apos;re speaking
+              Speaking
             </span>
           </div>
         )}
@@ -134,19 +114,18 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
       <section
         className="mx-6 mb-4 rounded-2xl overflow-hidden flex flex-col"
         style={{
-          background: "var(--surface)",
+          background: "rgba(255,255,255,0.03)",
           border: "1px solid var(--border)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
           height: 200,
           maxHeight: "30vh",
         }}
       >
-        <div
-          className="px-4 py-2.5"
-          style={{ borderBottom: "1px solid var(--border)" }}
-        >
+        <div className="px-4 py-2.5" style={{ borderBottom: "1px solid var(--border)" }}>
           <span
             className="text-xs font-medium uppercase tracking-widest"
-            style={{ color: "var(--text-secondary)" }}
+            style={{ color: "var(--text-secondary)", letterSpacing: "0.15em" }}
           >
             Transcript
           </span>
@@ -159,22 +138,20 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
         </div>
       </section>
 
-      {/* Footer controls */}
-      <footer className="flex items-center justify-center pb-8">
+      <footer className="flex items-center justify-center pb-8 shrink-0">
         <button
           onClick={onEnd}
-          className="px-8 py-3 rounded-full font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+          className="px-8 py-3 rounded-full font-medium text-sm transition-all duration-200 hover:scale-105 active:scale-95"
           style={{
-            background: "rgba(239,68,68,0.15)",
-            border: "1px solid rgba(239,68,68,0.4)",
-            color: "#ef4444",
+            background: "rgba(248,113,113,0.1)",
+            border: "1px solid rgba(248,113,113,0.25)",
+            color: "var(--red)",
           }}
         >
           End Call
         </button>
       </footer>
 
-      {/* Debug overlay */}
       <DebugPanel />
     </div>
   );

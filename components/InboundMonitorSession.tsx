@@ -34,15 +34,23 @@ export function InboundMonitorSession({ roomName, onStop }: InboundMonitorSessio
 
       {/* Header */}
       <header
-        className="flex items-center justify-between px-6 py-4"
+        className="flex items-center justify-between px-6 py-4 shrink-0"
         style={{ borderBottom: "1px solid var(--border)" }}
       >
-        <div className="flex items-center gap-3">
-          <span className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>
+        <div className="flex items-center gap-2.5">
+          <span
+            className="text-base font-semibold"
+            style={{
+              background: "linear-gradient(135deg, #c084fc, #818cf8)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
             EchoMinds
           </span>
           <span className="text-xs font-mono truncate max-w-[160px]" style={{ color: "var(--text-secondary)" }}>
-            {roomName}
+            · {roomName}
           </span>
         </div>
         <ConnectionBadge state={connectionState} />
@@ -68,8 +76,10 @@ export function InboundMonitorSession({ roomName, onStop }: InboundMonitorSessio
       <section
         className="mx-6 mb-4 rounded-2xl overflow-hidden flex flex-col"
         style={{
-          background: "var(--surface)",
+          background: "rgba(255,255,255,0.03)",
           border: "1px solid var(--border)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
           height: 200,
           maxHeight: "30vh",
         }}
@@ -91,11 +101,11 @@ export function InboundMonitorSession({ roomName, onStop }: InboundMonitorSessio
       <footer className="flex items-center justify-center pb-8">
         <button
           onClick={onStop}
-          className="px-8 py-3 rounded-full font-semibold text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+          className="px-8 py-3 rounded-full font-medium text-sm transition-all duration-200 hover:scale-105 active:scale-95"
           style={{
-            background: "rgba(239,68,68,0.15)",
-            border: "1px solid rgba(239,68,68,0.4)",
-            color: "#ef4444",
+            background: "rgba(248,113,113,0.1)",
+            border: "1px solid rgba(248,113,113,0.25)",
+            color: "var(--red)",
           }}
         >
           Stop Monitoring

@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #080b12;
-  --surface: #0f1420;
-  --surface-2: #161d2e;
-  --border: #1e2a42;
-  --text-primary: #e8edf7;
-  --text-secondary: #6b7a99;
-  --accent: #4f7cff;
-  --accent-glow: rgba(79, 124, 255, 0.35);
-  --agent-color: #4f7cff;
+  --bg: #06060d;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f0eeff;
+  --text-secondary: rgba(240, 238, 255, 0.42);
+  --accent: #7c5af6;
+  --accent-light: #a78bfa;
+  --accent-glow: rgba(124, 90, 246, 0.32);
+  --agent-color: #7c5af6;
   --user-color: #34d399;
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --green: #34d399;
 }
 
 @theme inline {
@@ -33,22 +37,55 @@ html, body {
   padding: 0;
   background: var(--bg);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
 }
 
+/* Subtle dot grid texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Top radial glow */
+body::after {
+  content: "";
+  position: fixed;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 500px;
+  background: radial-gradient(ellipse, rgba(124, 90, 246, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content sits above texture layers */
+#__next,
+[data-nextjs-scroll-focus-boundary],
+.h-full {
+  position: relative;
+  z-index: 1;
+}
+
 /* Orb idle breathing */
 @keyframes orb-breathe {
-  0%, 100% { transform: scale(1); opacity: 0.7; }
+  0%, 100% { transform: scale(1); opacity: 0.75; }
   50% { transform: scale(1.06); opacity: 1; }
 }
 
 /* Orb speaking pulse */
 @keyframes orb-pulse {
   0%, 100% { transform: scale(1); box-shadow: 0 0 40px 10px var(--accent-glow); }
-  25% { transform: scale(1.08); box-shadow: 0 0 70px 20px var(--accent-glow); }
-  75% { transform: scale(1.04); box-shadow: 0 0 55px 15px var(--accent-glow); }
+  25% { transform: scale(1.08); box-shadow: 0 0 70px 22px var(--accent-glow); }
+  75% { transform: scale(1.04); box-shadow: 0 0 55px 16px var(--accent-glow); }
 }
 
 /* Ring orbit */
@@ -72,6 +109,11 @@ html, body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to   { background-position: 200% center; }
+}
+
 .orb-idle {
   animation: orb-breathe 3s ease-in-out infinite;
 }
@@ -90,6 +132,14 @@ html, body {
 
 .transcript-entry {
   animation: fade-in-up 0.25s ease-out;
+}
+
+/* Glassmorphic card base */
+.glass {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* BarVisualizer CSS override */

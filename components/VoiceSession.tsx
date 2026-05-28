@@ -127,16 +127,19 @@ export function VoiceSession({ onEnd }: VoiceSessionProps) {
         />
       </div>
 
-      {/* Status + end call */}
+      {/* Status row */}
+      <div className="flex items-center justify-center px-6 py-2 shrink-0">
+        <AgentStatusPill agentState={agentState} isUserSpeaking={isUserSpeaking} />
+      </div>
+
+      {/* End call */}
       <footer
-        className="flex items-center justify-between px-6 py-4 shrink-0"
+        className="flex items-center justify-center pb-8 pt-2 shrink-0"
         style={{ borderTop: "1px solid var(--border)" }}
       >
-        <AgentStatusPill agentState={agentState} isUserSpeaking={isUserSpeaking} />
-
         <button
           onClick={onEnd}
-          className="px-6 py-2.5 rounded-full font-medium text-sm transition-all duration-200 hover:scale-105 active:scale-95"
+          className="px-8 py-3 rounded-full font-medium text-sm transition-all duration-200 hover:scale-105 active:scale-95"
           style={{
             background: "rgba(220,38,38,0.08)",
             border: "1px solid rgba(220,38,38,0.2)",

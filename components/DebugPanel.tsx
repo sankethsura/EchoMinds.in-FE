@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   useConnectionState,
   useLocalParticipant,
@@ -19,6 +19,13 @@ export function DebugPanel() {
   const [errors, setErrors] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
 
+  // Drag state
+  const panelRef = useRef<HTMLDivElement>(null);
+  const dragOffset = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+  const [pos, setPos] = useState<{ bottom: number; right: number } | null>(null);
+  const [freePos, setFreePos] = useState<{ x: number; y: number } | null>(null);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const handler = (e: ErrorEvent) => {
@@ -34,6 +41,26 @@ export function DebugPanel() {
       window.removeEventListener("unhandledrejection", unhandled);
     };
   }, []);
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    if (!panelRef.current) return;
+    isDragging.current = true;
+    const rect = panelRef.current.getBoundingClientRect();
+    dragOffset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    e.preventDefault();
+
+    const onMove = (me: MouseEvent) => {
+      if (!isDragging.current) return;
+      setFreePos({ x: me.clientX - dragOffset.current.x, y: me.clientY - dragOffset.current.y });
+    };
+    const onUp = () => {
+      isDragging.current = false;
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
 
   const connLabel: Record<ConnectionState, string> = {
     [ConnectionState.Connected]: "CONNECTED",
@@ -54,23 +81,31 @@ export function DebugPanel() {
 
   const hasErrors = errors.length > 0;
 
+  const posStyle: React.CSSProperties = freePos
+    ? { position: "fixed", left: freePos.x, top: freePos.y, bottom: "auto", right: "auto" }
+    : { position: "fixed", bottom: 16, right: 16 };
+
   return (
     <div
-      className="fixed bottom-4 right-4 rounded-xl z-50"
+      ref={panelRef}
+      className="rounded-xl z-50"
       style={{
+        ...posStyle,
         background: "rgba(8,11,18,0.95)",
         border: `1px solid ${hasErrors ? "rgba(248,113,113,0.5)" : "rgba(79,124,255,0.3)"}`,
         backdropFilter: "blur(8px)",
         maxWidth: 340,
         width: "100%",
         fontSize: 11,
+        userSelect: "none",
       }}
     >
-      {/* Header — always visible, click to toggle */}
+      {/* Header — drag handle + toggle */}
       <button
+        onMouseDown={onMouseDown}
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-4 py-2.5 select-none"
-        style={{ cursor: "pointer" }}
+        className="w-full flex items-center justify-between px-4 py-2.5"
+        style={{ cursor: "grab" }}
       >
         <div className="flex items-center gap-2">
           <span className="font-bold" style={{ color: hasErrors ? "#f87171" : "#4f7cff" }}>
@@ -104,17 +139,12 @@ export function DebugPanel() {
           <div className="pt-2 flex flex-col gap-1">
             {row("connection", connLabel[connectionState] ?? connectionState,
               connectionState === ConnectionState.Connected)}
-
             {row("mic enabled", String(isMicrophoneEnabled), isMicrophoneEnabled)}
-
             {row("mic track sid", microphoneTrack?.trackSid ?? "none", !!microphoneTrack)}
-
             {row("mic track muted",
               microphoneTrack ? String(microphoneTrack.isMuted) : "—",
               microphoneTrack ? !microphoneTrack.isMuted : undefined)}
-
             {row("local identity", localParticipant?.identity ?? "—")}
-
             {row(
               "remote participants",
               remoteParticipants.length === 0
@@ -122,13 +152,9 @@ export function DebugPanel() {
                 : remoteParticipants.map((p) => p.identity).join(", "),
               remoteParticipants.length > 0,
             )}
-
             {row("agent state", agentState)}
-
             {row("agent identity", agent?.identity ?? "none (not dispatched)", !!agent)}
-
             {row("agent audio track", audioTrack ? "present" : "none", !!audioTrack)}
-
             {row("transcriptions", `${transcriptions.length} segments`)}
           </div>
 

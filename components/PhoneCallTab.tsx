@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { LiveKitRoom } from "@livekit/components-react";
-import { PhoneCallSession } from "./PhoneCallSession";
+import { LiveKitRoom, RoomAudioRenderer, useRemoteParticipants } from "@livekit/components-react";
 import { startCall, fetchSipStatus, createOutboundTrunk, createTwilioTrunk, type TokenResponse } from "@/lib/api";
 
 type CallState =
   | { status: "idle" }
   | { status: "placing"; phoneNumber: string }
-  | { status: "active"; session: TokenResponse }
+  | { status: "live"; session: TokenResponse; audioEnabled: boolean }
   | { status: "error"; message: string };
 
 const isSipUri = (v: string) => v.trim().toLowerCase().startsWith("sip:");
@@ -49,6 +48,116 @@ function PhoneInput({ value, onChange, disabled }: PhoneInputProps) {
     </div>
   );
 }
+
+// ── Outbound call lifecycle tracker ────────────────────────────────────────────
+
+type CallPhase = "dialling" | "in-call" | "ended";
+
+function OutboundCallTracker({
+  phoneNumber,
+  audioEnabled,
+  onEnableAudio,
+  onEnd,
+}: {
+  phoneNumber: string;
+  audioEnabled: boolean;
+  onEnableAudio: () => void;
+  onEnd: () => void;
+}) {
+  const participants = useRemoteParticipants();
+  const [phase, setPhase] = useState<CallPhase>("dialling");
+  const phoneJoined = participants.some((p) => p.identity === "phone-user");
+
+  useEffect(() => {
+    if (phase === "dialling" && phoneJoined) setPhase("in-call");
+    if (phase === "in-call" && !phoneJoined) setPhase("ended");
+  }, [phoneJoined, phase]);
+
+  const phaseConfig: Record<CallPhase, { label: string; sublabel: string; color: string; dot?: boolean }> = {
+    dialling: {
+      label: "Dialling…",
+      sublabel: "Waiting for the call to be answered",
+      color: "#fbbf24",
+      dot: true,
+    },
+    "in-call": {
+      label: "In Call",
+      sublabel: "Aria is speaking with the recipient",
+      color: "#34d399",
+    },
+    ended: {
+      label: "Call Ended",
+      sublabel: "The call has finished",
+      color: "var(--text-secondary)",
+    },
+  };
+
+  const { label, sublabel, color, dot } = phaseConfig[phase];
+
+  return (
+    <div
+      className="flex flex-col items-center justify-center gap-8 h-full px-6"
+      style={{ background: "var(--bg)" }}
+    >
+      {/* Phase indicator */}
+      <div className="flex items-center gap-2">
+        <div
+          className={`w-2.5 h-2.5 rounded-full ${dot ? "animate-pulse" : ""}`}
+          style={{ background: color }}
+        />
+        <span className="text-lg font-semibold" style={{ color }}>{label}</span>
+      </div>
+
+      {/* Number + sublabel */}
+      <div className="flex flex-col items-center gap-1 text-center">
+        <span className="text-2xl font-mono font-bold" style={{ color: "var(--text-primary)" }}>
+          {phoneNumber}
+        </span>
+        <span className="text-sm" style={{ color: "var(--text-secondary)" }}>{sublabel}</span>
+      </div>
+
+      {/* Actions */}
+      <div className="flex flex-col gap-3 w-full max-w-xs">
+        {phase === "in-call" && !audioEnabled && (
+          <button
+            onClick={onEnableAudio}
+            className="w-full py-3 rounded-full text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
+            style={{
+              background: "rgba(79,124,255,0.15)",
+              border: "1px solid rgba(79,124,255,0.4)",
+              color: "#5f8cff",
+            }}
+          >
+            Listen In
+          </button>
+        )}
+        {phase === "ended" ? (
+          <button
+            onClick={onEnd}
+            className="w-full py-3 rounded-full text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
+            style={{ background: "var(--accent)", color: "#fff" }}
+          >
+            Done
+          </button>
+        ) : (
+          <button
+            onClick={onEnd}
+            className="w-full py-3 rounded-full text-sm font-semibold transition-all duration-200 hover:opacity-90 active:scale-95"
+            style={{
+              background: "rgba(239,68,68,0.12)",
+              border: "1px solid rgba(239,68,68,0.35)",
+              color: "#ef4444",
+            }}
+          >
+            End Call
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Provider setup form ─────────────────────────────────────────────────────────
 
 type Provider = "linphone" | "twilio" | "plivo";
 
@@ -115,7 +224,7 @@ export function PhoneCallTab() {
     try {
       const session = await startCall(number, controller.signal);
       if (!controller.signal.aborted) {
-        setCallState({ status: "active", session });
+        setCallState({ status: "live", session, audioEnabled: false });
       }
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") return;
@@ -135,21 +244,26 @@ export function PhoneCallTab() {
     if (e.key === "Enter") placeCall();
   };
 
-  if (callState.status === "active") {
+  if (callState.status === "live") {
     return (
       <div className="h-full">
         <LiveKitRoom
           serverUrl={callState.session.url}
           token={callState.session.token}
           connect={true}
-          audio={false}
+          audio={callState.audioEnabled}
           video={false}
           onDisconnected={endCall}
           onError={(err) => setCallState({ status: "error", message: err.message })}
           style={{ height: "100%", display: "flex", flexDirection: "column" }}
         >
-          <PhoneCallSession
+          {callState.audioEnabled && <RoomAudioRenderer volume={1.0} />}
+          <OutboundCallTracker
             phoneNumber={callState.session.phone_number ?? ""}
+            audioEnabled={callState.audioEnabled}
+            onEnableAudio={() =>
+              setCallState((s) => s.status === "live" ? { ...s, audioEnabled: true } : s)
+            }
             onEnd={endCall}
           />
         </LiveKitRoom>

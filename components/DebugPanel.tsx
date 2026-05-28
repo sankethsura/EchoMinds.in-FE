@@ -17,7 +17,7 @@ export function DebugPanel() {
   const { state: agentState, audioTrack, agent } = useVoiceAssistant();
   const transcriptions = useTranscriptions();
   const [errors, setErrors] = useState<string[]>([]);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
